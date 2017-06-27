@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>OSCAR Blogs</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- FontAwesome text icons library-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <style type="text/css">
+      body{
+        margin:0px auto 30px auto;
+        padding: 0;
+      }
+      #grid{
+        margin-left: -15px;
+        margin-right: -15px;
+        height: 300px; /*150px for one row */
+      }
+      .container-fluid{
+        margin:0;
+        padding: 0;
+      }
+      .container-paging{
+        text-align: center;
+      }
+      .pagination>li>a, .pagination>li>span { border-radius: 10% !important;margin: 0 5px; color:#ff6600;}
+      .pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover{color:#ff6600;}
+      .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover{ background-color: #ff6600;border-color:#ff4400; }
+      a{color:#ff6600;}
+      a span{color:#000;}
+      .bgreen{
+        background-color:#50BE87;
+        min-height: 114px;
+        padding: 15px;
+      }
+      .bblue{
+        background-color: #4BB4E6;
+        min-height: 114px;
+        padding: 15px;
+      }
+      .borange{
+        background-color: #FF7900;
+        min-height: 114px;
+        padding: 15px;
+      }
+      .byellow{
+        background-color: #FFD200;
+        min-height: 114px;
+        padding: 15px;
+      }       
+      .divider{
+        min-height: 30px;
+        background-color: #fff;
+      }
+      .bleft{
+        text-align: left;
+        width:175px;
+        height: 84px;
+      }
+      .bleft span{
+        font-size: 15px;
+        letter-spacing: normal;
+        line-height: 18px;
+      }
+      .bleft span a, .bright h4 a{
+        color:#000;
+        text-decoration: none;
+      }
+      .bleft span a:hover, .bright h4 a:hover{
+        color:#444;
+        text-decoration: none;
+      }
+      .bright{
+        padding-top: 25px;
+        padding-right: 15px;
+        text-align: right;
+      }
+      .bright h4{
+        font-weight: bold;
+        color:#111;
+      }
+      
+      li {list-style: none}
+
+      .easyPaginateNav{
+        text-align: center;
+      }
+
+      .easyPaginateNav a {
+          padding: 5px;
+          background-color: #fff;
+          margin: 0px 5px;
+          padding: 6px 13px;
+          border-radius: 10%;
+          border: 1px solid #ddd;
+      }
+      .easyPaginateNav a.current {
+          font-weight: bold;
+          text-decoration: none;
+          background-color: #ff6600;
+          color: #fff;
+          border-color: #ff5500;
+      }
+
+      #grid li{margin-bottom: 30px !important;}
+    </style>
+
+
+<div id="grid">
+<span style="margin-left:15px;">Loading...</span>
+<div class="easyPaginateNav"></div>
+</div><!-- /#grid -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="/resources/statics/1598968/jquery.easyPaginate.js"></script>
+    <script src="/resources/statics/1598968/jquery.textfill.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+var object;
+var columnCount = 4; 
+var placeId = "1006";
+var green ="bgreen";
+var blue = "bblue";
+var yellow ="borange";
+var orange ="byellow"
+var bcolor = [orange,blue,yellow,green];
+var bgColor = orange;
+var rowPerPage = 2;
+
+var shuffle = function(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+};
+
+var sanitizeJiveJsonResponse =  function(data) { return data.replace("throw 'allowIllegalResourceCall is false.';", "") };
+
+
+jQuery(document).on('ready', function() {
+//alert("read");
+var addInformation = function(data){
+  //console.log(data);
+//data.list = shuffle(data.list);
+var rowCount = data.list.length/columnCount; 
+rowCount = (rowCount % 1 == 0) ? rowCount : rowCount + 1;
+var arrayCount= 0;
+  for (var i = 0; i <Math.floor(rowCount); i++){
+     jQuery("#grid").append("<li><div class=\"container-fluid\"><div class=\"row-fluid\">");
+    for(var j = 0 ; j<4; j++){
+      if (typeof data.list[arrayCount] !== "undefined"){
+      // ...  
+        jQuery(".container-fluid").last().append("<a target=\"_blank\"  href="+data.list[arrayCount].permalink+"><div class=\"col-md-3\"><div class="+bcolor[j]+"><div class=\"row\"><div class=\"col-xs-8\"><div id=\"btitle\" class=\"bleft\" style=\"width:175px;height:74px;\"><span class='blockText'>"+data.list[arrayCount].subject+"</span></div></div><div class=\"col-xs-4\"><div class=\"bright\"><h4>"+data.list[arrayCount].likeCount+" <i class=\"fa fa-thumbs-up\" aria-hidden=\"true\"></i></h4></div></div></div></div></div></a>");
+        arrayCount++;
+       // bgColor = (bgColor == blue) ? green:blue;
+       }//if 
+    }//for j
+    //bgColor = (bgColor == blue) ? green:blue;
+    bcolor.reverse(); 
+    jQuery("#grid").append("</div></div></li>");
+    jQuery("#grid").append("<div class=\"divider\"></div>"); 
+  }//for count
+
+    jQuery('#grid').easyPaginate({
+        paginateElement: 'li',
+        elementsPerPage: rowPerPage,
+        effect: 'climb'
+    }); 
+};
+
+  jQuery.ajax({  
+      url: "https://plazza.orange.com/api/core/v3/contents?count=100&filter=type(discussion)&filter=place(https://plazza.orange.com/api/core/v3/places/"+placeId+")",  
+      context: document.body,  
+      dataType: "json",  
+      dataFilter: function(data) { 
+          return sanitizeJiveJsonResponse(data);  
+      }  
+    }).done(addInformation);//ajax  
+
+  jQuery('#btitle').textfill({
+    // 
+  });
+
+});//doc ready         
+</script>
